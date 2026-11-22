@@ -16,13 +16,16 @@ export default function SessionCard({ s }) {
           <span className={"dot" + (open ? " pulse" : "")} />
           {open ? "مفتوحة" : "مغلقة"}
         </span>
-        <span className="sago">{ago(s.created_at)}</span>
+        <span className="t-xs dim sp">{ago(s.created_at)}</span>
       </div>
 
       <div className="sbd">
         <div className="sinfo">
-          <b>{s.title || "جلسة بلا اسم"}</b>
-          <span><Icon name="book" />{s.quiz_title}</span>
+          <div className="sname ellip">{s.title || "جلسة بلا اسم"}</div>
+          <div className="squiz">
+            <Icon name="book" strokeWidth={1.8} />
+            <span className="ellip">{s.quiz_title}</span>
+          </div>
         </div>
         <div className="sstats">
           <div className="sstat"><b>{s.joined}</b><span>انضم</span></div>

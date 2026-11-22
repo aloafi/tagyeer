@@ -132,17 +132,28 @@ export default function Quizzes() {
 
   return (
     <>
-      <div className="toolbar sec">
-        <input className="inp sm grow" placeholder="ابحث في التجارب…" value={term} onChange={(e) => setTerm(e.target.value)} />
-        <select className="inp sm" value={sort} onChange={(e) => setSort(e.target.value)} aria-label="الترتيب">
-          <option value="updated">الأحدث تحديثاً</option>
+      <div className="toolbar">
+        <div className="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <input className="inp" placeholder="ابحث في التجارب…" value={term} onChange={(e) => setTerm(e.target.value)} />
+        </div>
+        <select
+          className="inp"
+          style={{ width: "auto", minWidth: 150 }}
+          value={sort}
+          onChange={(e) => setSort(e.target.value)}
+          aria-label="الترتيب"
+        >
+          <option value="updated">الأحدث تعديلاً</option>
           <option value="title">الاسم</option>
           <option value="responses">الأكثر مشاركة</option>
           <option value="sessions">الأكثر جلسات</option>
         </select>
-        <div className="seg">
-          <button className={view === "grid" ? "on" : ""} onClick={() => setView("grid")} aria-label="شبكة"><Icon name="grid4" /></button>
-          <button className={view === "list" ? "on" : ""} onClick={() => setView("list")} aria-label="قائمة"><Icon name="rows" /></button>
+        <div className="seg sp">
+          <button className={view === "grid" ? "on" : ""} onClick={() => setView("grid")} title="شبكة"><Icon name="grid4" strokeWidth={1.8} /></button>
+          <button className={view === "list" ? "on" : ""} onClick={() => setView("list")} title="قائمة"><Icon name="rows" strokeWidth={1.8} /></button>
         </div>
       </div>
 
