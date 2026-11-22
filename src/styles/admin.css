@@ -189,6 +189,7 @@ body.slim .brandbox{justify-content:center;padding:4px 0 14px}
   box-shadow:var(--sh-xs);transition:transform .18s,box-shadow .18s,border-color .18s;cursor:pointer;position:relative;
   display:flex;flex-direction:column;min-height:206px}
 .qcard:hover{border-color:var(--brand-300);box-shadow:var(--sh-md);transform:translateY(-2px)}
+.qcard:has(.menu.open){overflow:visible;z-index:5}
 .qcard .cover{height:84px;flex:none;position:relative;display:grid;place-items:center;
   background:linear-gradient(135deg,var(--brand-50) 0%,#FFFFFF 55%,var(--gold-50) 100%);
   border-bottom:1px solid var(--border)}
@@ -218,7 +219,7 @@ body.slim .brandbox{justify-content:center;padding:4px 0 14px}
 .qgrid.list .qcard .when{display:none}
 
 .menu{position:relative}
-.menu .pop{position:absolute;inset-inline-end:0;top:calc(100% + 6px);background:var(--surface);border:1px solid var(--border);
+.menu .pop{position:absolute;inset-inline-start:0;top:calc(100% + 6px);background:var(--surface);border:1px solid var(--border);
   border-radius:var(--r);box-shadow:var(--sh-lg);min-width:190px;padding:5px;z-index:50;display:none}
 .menu.open .pop{display:block;animation:fade .14s ease both}
 .menu .pop button{display:flex;align-items:center;gap:9px;width:100%;border:0;background:none;cursor:pointer;
