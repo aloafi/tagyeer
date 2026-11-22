@@ -27,18 +27,23 @@ export async function rpc(fn, args, { signal } = {}) {
   try { d = t ? JSON.parse(t) : null; } catch { /* استجابة غير JSON */ }
 
   if (!r.ok) {
-    const m = String((d && (d.message || d.details)) || t || "");
+    const m = String((d && (d.message || d.details || d.hint)) || t || "");
     if (m.includes("unauthorized")) throw new ApiError("كلمة المرور غير صحيحة.");
     if (m.includes("weak_password")) throw new ApiError("كلمة المرور الجديدة قصيرة جداً.");
-    throw new ApiError("تعذر تنفيذ الطلب. تحقق من الاتصال وحاول مجدداً.");
+    const e = new ApiError("تعذر تنفيذ الطلب. تحقق من الاتصال وحاول مجدداً.");
+    e.raw = m;          /* السبب الأصلي يبقى متاحاً لترجمة رسائل المشارك */
+    e.status = r.status;
+    throw e;
   }
   return d;
 }
 
-/* ---------- المشارِك ---------- */
-export const getSession   = (code)            => rpc("cmq_get_session", { p_code: code });
-export const joinSession  = (code, name, meta)=> rpc("cmq_join", { p_code: code, p_name: name, p_meta: meta });
-export const submitAnswers= (pid, answers)    => rpc("cmq_submit", { p_participant: pid, p_answers: answers });
+/* ---------- المشارِك ----------
+   أسماء المعاملات هنا يجب أن تطابق توقيع الدالة في قاعدة البيانات حرفاً بحرف،
+   وإلا ردّ PostgREST بأن الدالة غير موجودة. راجع scripts/check-rpc.mjs */
+export const getSession   = (code)            => rpc("cmq_get_session", { code });
+export const joinSession  = (code, name, meta)=> rpc("cmq_join", { code, p_name: name, p_meta: meta });
+export const submitAnswers= (pid, answers)    => rpc("cmq_submit", { p_participant: pid, answers });
 
 /* ---------- المسؤول ---------- */
 export const adminLogin     = (pw)                 => rpc("cmq_admin_login", { pw });

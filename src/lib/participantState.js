@@ -24,7 +24,7 @@ export const PARTICIPANT_ERRORS = {
 
 /* رسائل الخادم تُترجم إلى عربية مفهومة للمشارك */
 export function friendly(err) {
-  const raw = String(err?.message || err || "");
+  const raw = String(err?.raw || err?.message || err || "");
   const key = Object.keys(PARTICIPANT_ERRORS).find((k) => raw.includes(k));
   return key ? PARTICIPANT_ERRORS[key] : raw || "تعذر الاتصال بالخادم. تحقق من الإنترنت وحاول مرة أخرى.";
 }
