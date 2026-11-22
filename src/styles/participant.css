@@ -243,3 +243,35 @@ canvas.confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:non
 @media (prefers-reduced-motion:reduce){
   *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
 }
+
+/* ==========================================================
+   طبقة الجوال لصفحة المشارك
+   لا تمسّ شيئاً فوق 860 بكسل.
+   ========================================================== */
+@media (max-width:860px){
+  /* 16 بكسل تمنع تكبير iOS عند التركيز على الحقل */
+  .input, .ta{ font-size:16px; min-height:52px; }
+  .input.code{ font-size:clamp(26px,9vw,34px); }
+  .ta{ min-height:140px; }
+
+  .btn{ min-height:52px; }
+  .btn-ghost,.btn-scan{ min-height:48px; }
+  .opt{ min-height:56px; }
+  .link{ min-height:44px; display:inline-flex; align-items:center; }
+
+  /* مساحة آمنة أسفل الشاشة وأعلاها */
+  .stage{
+    padding-top:calc(clamp(16px,4vw,34px) + env(safe-area-inset-top));
+    padding-bottom:calc(28px + env(safe-area-inset-bottom));
+  }
+  .sheet .scan-card{ padding-bottom:calc(16px + env(safe-area-inset-bottom)); }
+
+  /* الحقل المركَّز لا يختفي خلف لوحة المفاتيح */
+  .input, .ta, .opt{ scroll-margin-block:24px 140px; }
+}
+
+@media (max-width:380px){
+  .opts.tf{ grid-template-columns:1fr; }
+  .btn-row{ flex-direction:column; }
+  .btn-row .btn{ width:100%; }
+}

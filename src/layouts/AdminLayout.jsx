@@ -3,6 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import Icon from "../components/ui/Icon.jsx";
+import Wordmark from "../components/ui/Wordmark.jsx";
 import { useAuth } from "../lib/auth.jsx";
 import { useAdminData } from "../hooks/useAdminData.jsx";
 import useDocumentTitle from "../hooks/useDocumentTitle.js";
@@ -59,7 +60,7 @@ export default function AdminLayout() {
 
           <aside className={"sidebar" + (navOpen ? " open" : "")}>
             <div className="brandbox">
-              <div className="bm"><Icon name="refresh" /></div>
+              <div className="bm"><Wordmark /></div>
               <div><b>منصة تغيير</b><span>إدارة التغيير والثقافة المؤسسية</span></div>
             </div>
 

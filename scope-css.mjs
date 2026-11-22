@@ -4,7 +4,12 @@ import { readFileSync, writeFileSync } from "node:fs";
 const [, , inFile, outFile, scope] = process.argv;
 if (!inFile || !outFile || !scope) throw new Error("usage: scope-css <in> <out> <.scope>");
 
-const src = readFileSync(inFile, "utf8");
+let src = readFileSync(inFile, "utf8");
+
+/* التعليقات تُزال قبل التحليل: تعليق قبل @media كان يجعل المحلّل يحسبه
+   محدِّداً عادياً فيسبقه بصنف الجذر، فتفسد القاعدة كلها بصمت.
+   الملف المصدر يحتفظ بتعليقاته؛ المحذوف هنا هو الناتج المولَّد فقط. */
+src = src.replace(/\/\*[\s\S]*?\*\//g, "");
 
 /* يقسّم على الفواصل العليا فقط، لا داخل الأقواس */
 function splitTop(sel) {

@@ -105,6 +105,7 @@ select.inp{cursor:pointer;appearance:none;background-repeat:no-repeat;background
 .brandbox{display:flex;align-items:center;gap:10px;padding:4px 8px 14px;overflow:hidden}
 .brandbox .bm{width:34px;height:34px;border-radius:10px;background:var(--brand);display:grid;place-items:center;flex:none}
 .brandbox .bm svg{width:18px;height:18px;color:#fff}
+.brandbox .bm svg.wm{width:23px;height:auto;color:#fff}
 .brandbox b{font-size:15px;font-weight:700;color:var(--brand-800);line-height:1.2;display:block;white-space:nowrap}
 .brandbox span{font-size:11px;color:var(--text-3);white-space:nowrap}
 .navgrp{font-size:10.5px;font-weight:700;color:var(--text-3);padding:12px 10px 5px;letter-spacing:.4px;white-space:nowrap}
@@ -486,3 +487,195 @@ mark{background:var(--gold-100);color:inherit;border-radius:3px;padding:0 2px}
 .pickopt.sel .pck svg{opacity:1}
 
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms !important;transition-duration:.01ms !important}}
+
+/* ==========================================================
+   طبقة الجوال
+   تُضاف فوق التصميم القائم ولا تمسّ أي قاعدة للكمبيوتر:
+   كل ما يلي داخل استعلامات لا تنطبق فوق 980 بكسل.
+   ========================================================== */
+
+/* ---------- القائمة الجانبية المنزلقة ----------
+   كانت تُخفى بإزاحة موجبة، والقائمة مثبّتة عند الحافة اليسرى في RTL،
+   فكانت الإزاحة تدفعها إلى داخل الشاشة فتغطّي شريطاً بعرض 88 بكسل على
+   اليمين — وفيه زرّ فتح القائمة نفسه، فيتعذّر الضغط عليه على الجوال. */
+@media (max-width:980px){
+  .sidebar{
+    width:min(86vw,300px);
+    transform:translateX(-100%);
+    visibility:hidden;
+    pointer-events:none;
+    padding-top:calc(14px + env(safe-area-inset-top));
+    padding-bottom:calc(14px + env(safe-area-inset-bottom));
+    overflow-y:auto;
+    overscroll-behavior:contain;
+  }
+  .sidebar.open{ transform:none; visibility:visible; pointer-events:auto; }
+
+  .mobar{
+    padding-top:calc(10px + env(safe-area-inset-top));
+    padding-inline:max(14px, env(safe-area-inset-right)) max(14px, env(safe-area-inset-left));
+  }
+  .pagehead{ top:auto; }
+  .content{ padding-bottom:calc(70px + env(safe-area-inset-bottom)); }
+}
+
+/* ---------- مقاسات اللمس وقابلية القراءة ---------- */
+@media (max-width:860px){
+  /* 16 بكسل تمنع تكبير iOS التلقائي عند التركيز على الحقول */
+  .inp{ min-height:44px; font-size:16px; }
+  .inp.sm{ min-height:44px; }
+  textarea.inp{ min-height:96px; }
+  select.inp{ min-height:44px; font-size:16px; }
+
+  .btn{ min-height:46px; padding-inline:20px; }
+  .btn.sm{ min-height:44px; padding:8px 16px; font-size:14px; }
+  .btn.xs{ min-height:38px; padding:6px 14px; }
+  .iconbtn{ width:44px; height:44px; }
+  .navitem{ min-height:48px; }
+  .step{ min-height:44px; }
+  .seg button{ min-height:44px; min-width:48px; }
+  .tabs button,.tabs a{ min-height:48px; display:inline-flex; align-items:center; }
+  .menu .pop button{ min-height:44px; }
+  .crumb button{ min-height:44px; display:inline-flex; align-items:center; }
+  .closex{ width:48px; height:48px; }
+  .cel{ min-width:44px; min-height:44px; }
+
+  /* لا نصّ تحت 12 بكسل */
+  .navgrp,
+  .navitem .count,
+  .brandbox span,
+  .kpi .s,
+  .sstat span,
+  .qcard .when,
+  .feedrow .who span,
+  .feedrow .when,
+  .quote .who,
+  .obar,
+  .obar .ov,
+  .axnote,
+  .bandhead,
+  .mx thead th,
+  .step .n,
+  .rk,
+  .rkshare,
+  .dlrow .pc{ font-size:12px; }
+
+  /* نصوص الرسوم تُقاس بوحدات viewBox ثم تُصغَّر مع الرسم،
+     فتُكبَّر هنا ليبقى المقروء على الجوال قريباً من 11 بكسل */
+  svg .ax{ font-size:15px; }
+  svg .vl{ font-size:15px; }
+
+  /* بقية النصوص الصغيرة: أي شيء دون 12 بكسل يصعب قراءته على الجوال */
+  .chip,
+  .legend,
+  .heatlegend,
+  .typecard span,
+  .pickopt .ptx span,
+  .qdet .qdh .pos,
+  .quote .who,
+  .phone .pnum,
+  .bandline div{ font-size:12px; }
+
+  /* فتات الطريق: الارتفاع صار 44، والعرض يحتاج حشواً ليبلغها */
+  .crumb button{ padding-inline:8px; min-width:44px; justify-content:center; }
+
+  /* الجداول تنزلق أفقياً بسلاسة بدل أن تمدّ الصفحة */
+  .tblwrap{ -webkit-overflow-scrolling:touch; overscroll-behavior-x:contain; }
+  .tbl{ min-width:560px; }
+  .mx{ min-width:520px; }
+
+  /* لا يُقطع حقل مركَّز خلف الترويسة اللاصقة أو لوحة المفاتيح */
+  .inp, .opt, .pickopt{ scroll-margin-block:90px 120px; }
+}
+
+/* ---------- إعادة ترتيب العناصر على شاشة الهاتف ---------- */
+@media (max-width:640px){
+  /* ترويسة الصفحة: العنوان سطر، والإجراءات سطر كامل العرض */
+  .pagehead{ padding-block:10px; gap:8px; }
+  .pagehead > .row{ margin-inline-start:0; width:100%; }
+  .pagehead > .row .btn{ flex:1; }
+
+  /* شريط الأدوات: كل عنصر بعرض كامل بدل ازدحام سطر واحد */
+  .toolbar{ gap:8px; }
+  .toolbar .search{ max-width:none; min-width:0; flex:1 1 100%; }
+  .toolbar select.inp{ width:100% !important; min-width:0 !important; flex:1 1 100%; }
+  .toolbar .seg{ margin-inline-start:auto; }
+
+  /* ترويسة الجلسة: الرمز والعنوان فوق، والأزرار شبكة من عمودين */
+  .shead{ padding:14px; }
+  .shead .row.sp{ margin-inline-start:0; width:100%; display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+  .shead .row.sp .btn{ width:100%; }
+
+  /* محرّر المستويات: الصف الواحد كان ثماني أعمدة — يصير بطاقة مرتّبة */
+  .bandhead{ display:none; }
+  .band{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px; padding:12px; margin-bottom:12px;
+    border:1px solid var(--border); border-radius:var(--r); background:var(--surface);
+  }
+  .band .inp:nth-child(3){ grid-column:1 / -1; }
+  .band textarea.inp{ grid-column:1 / -1; }
+  .band input[type=color]{ width:100%; height:44px; }
+
+  /* خيارات السؤال: النص سطر والدرجة والحذف سطر */
+  .optrow{ flex-wrap:wrap; }
+  .optrow .inp.grow{ flex:1 1 100%; order:2; }
+  .optrow .inp.score{ order:3; }
+
+  /* البطاقات والمؤشرات */
+  .kpis{ grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; }
+  .chartgrid{ grid-template-columns:minmax(0,1fr); }
+  .sgrid,.qgrid{ grid-template-columns:minmax(0,1fr); }
+
+  /* النافذة المنبثقة تلتصق بأسفل الشاشة — أقرب لليد */
+  .modal{ align-items:flex-end; padding:0; }
+  .modal .box{
+    max-width:none; width:100%;
+    border-radius:var(--r-lg) var(--r-lg) 0 0;
+    padding:20px 18px calc(20px + env(safe-area-inset-bottom));
+    max-height:88svh; overflow-y:auto;
+  }
+  .modal .box.wide{ max-width:none; }
+  .picklist{ max-height:46svh; }
+
+  /* التنبيه فوق شريط النظام السفلي */
+  .toast{ bottom:calc(18px + env(safe-area-inset-bottom));
+    inset-inline:12px 12px; max-width:none; width:auto;
+    transform:translateY(110px); }
+  .toast.on{ transform:translateY(0); }
+
+  /* قائمة البطاقة تُفتح بعرض مريح دون أن تتجاوز الشاشة */
+  .menu .pop{ min-width:min(70vw,230px); }
+
+  /* شاشة العرض */
+  #proj{ padding:calc(20px + env(safe-area-inset-top)) 18px calc(20px + env(safe-area-inset-bottom)); }
+}
+
+/* ---------- أضيق الهواتف ---------- */
+@media (max-width:380px){
+  .shead .row.sp{ grid-template-columns:minmax(0,1fr); }
+  .pagehead > .row{ flex-wrap:wrap; }
+  .band{ grid-template-columns:minmax(0,1fr); }
+  .kpis{ grid-template-columns:minmax(0,1fr); }
+}
+
+/* شبكة أمان: لا تمرير أفقي للصفحة مهما حدث، مع إبقاء الجداول قابلة للتمرير */
+/* ---------- بطاقات بناء الأسئلة ---------- */
+@media (max-width:980px){
+  /* العمود كان يُقاس بأكبر محتوى فيتجاوز عرض الشاشة */
+  .qbuild{ grid-template-columns:minmax(0,1fr); }
+}
+
+@media (max-width:560px){
+  /* ترويسة السؤال: العنوان سطر، والنوع وأزرار التحكم سطر تحته */
+  .qb .qhead{ flex-wrap:wrap; row-gap:4px; }
+  .qb .qt{ flex:1 1 55%; }
+  .qb .qhead .chip{ order:10; }
+  .qb .qhead .iconbtn{ order:11; }
+  .qb .qhead .caret{ order:12; margin-inline-start:auto; }
+}
+
+@media (max-width:980px){
+  .admin-root{ overflow-x:clip; }
+}
