@@ -11,8 +11,9 @@ body { -webkit-font-smoothing: antialiased; }
 
 .route-fallback {
   min-height: 60svh;
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-family: "IBM Plex Sans Arabic", "Segoe UI", system-ui, sans-serif;
   color: #55665E;
   font-size: 14px;

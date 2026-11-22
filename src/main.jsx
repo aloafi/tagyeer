@@ -12,6 +12,7 @@ import { AuthProvider } from "./lib/auth.jsx";
 import { ToastProvider } from "./components/ui/Toast.jsx";
 import { DialogProvider } from "./components/ui/Dialog.jsx";
 import ErrorBoundary from "./components/ErrorBoundary.jsx";
+import hideSplash from "./lib/splash.js";
 
 function Routed() {
   return useRoutes(routes);
@@ -32,3 +33,6 @@ createRoot(document.getElementById("root")).render(
     </ErrorBoundary>
   </StrictMode>
 );
+
+/* التطبيق ركّب أول شاشة — نرفع شاشة البداية */
+hideSplash();
