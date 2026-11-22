@@ -1,0 +1,29 @@
+/* خط ثمانية (Thmanyah Sans) — مستضاف مع الموقع، فلا يعتمد على خدمة خطوط خارجية.
+   ملف الترخيص محفوظ في public/fonts/THMANYAH-LICENSE.pdf
+
+   العائلة لا تتضمّن وزن 600، والتصميم يستخدمه كثيراً، فنُسند الوزنين 600 و700
+   معاً إلى Bold صراحةً حتى لا يصنع المتصفح تغليظاً صناعياً مشوّهاً للحروف. */
+
+@font-face {
+  font-family: "Thmanyah Sans";
+  src: url("/fonts/thmanyahsans-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Thmanyah Sans";
+  src: url("/fonts/thmanyahsans-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Thmanyah Sans";
+  src: url("/fonts/thmanyahsans-Bold.woff2") format("woff2");
+  font-weight: 600 700;
+  font-style: normal;
+  font-display: swap;
+}

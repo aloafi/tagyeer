@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, useRoutes } from "react-router-dom";
 
+import "./styles/fonts.css";
 import "./styles/base.css";
 import "./styles/admin.scoped.css";
 import "./styles/participant.scoped.css";

@@ -12,7 +12,7 @@
   --sh-sm:0 2px 8px -4px rgba(16,32,25,.12);
   --sh-md:0 12px 28px -20px rgba(6,53,40,.45);
   --sh-lg:0 28px 60px -40px rgba(6,53,40,.55);
-  --font:"IBM Plex Sans Arabic","Segoe UI",system-ui,-apple-system,sans-serif;
+  --font:"Thmanyah Sans","IBM Plex Sans Arabic","Segoe UI",system-ui,-apple-system,sans-serif;
   --sidebar:250px;
   --gutter:clamp(16px,2.2vw,30px);
 }
