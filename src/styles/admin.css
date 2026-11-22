@@ -395,12 +395,15 @@ body.slim .brandbox{justify-content:center;padding:4px 0 14px}
 .feedrow .who b{display:block;font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .feedrow .who span{display:block;font-size:11px;color:var(--text-3);margin-top:1px}
 .feedrow .when{font-size:11px;color:var(--text-3);white-space:nowrap}
-.rank{display:grid;gap:14px}
+/* minmax(0,1fr) و min-width:0 يمنعان العنوان الطويل من تمديد الصف خارج البطاقة.
+   لا أثر لها حين يتّسع العرض (الحالة المعتادة على الكمبيوتر) — تعمل عند الضيق فقط. */
+.rank{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
 .rankrow{display:flex;gap:11px;align-items:flex-start}
+.rankrow > .grow{min-width:0}
 .rk{width:22px;height:22px;border-radius:7px;background:var(--brand-50);color:var(--brand);display:grid;
   place-items:center;font-size:11.5px;font-weight:700;flex:none;margin-top:1px}
 .rankrow.top .rk{background:var(--brand);color:#fff}
-.rkhead{display:flex;align-items:baseline;gap:8px;margin-bottom:7px}
+.rkhead{display:flex;align-items:baseline;gap:8px;margin-bottom:7px;min-width:0}
 .rklbl{font-size:13px;color:var(--text);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .rkshare{font-size:11px;color:var(--text-3);flex:none;font-variant-numeric:tabular-nums}
 .rkval{font-size:14.5px;font-weight:700;color:var(--brand-800);font-variant-numeric:tabular-nums;flex:none}
@@ -592,6 +595,41 @@ mark{background:var(--gold-100);color:inherit;border-radius:3px;padding:0 2px}
 
 /* ---------- إعادة ترتيب العناصر على شاشة الهاتف ---------- */
 @media (max-width:640px){
+  /* بطاقة الترتيب على الجوال: العنوان يأخذ سطره كاملاً (حتى سطرين)،
+     ثم الشريط والرقم والنسبة في سطر تحته. العناوين الطويلة تظهر كما هي
+     بدل أن تُقصّ، والرقم يبقى داخل البطاقة. لا تمسّ هذه القواعد الكمبيوتر. */
+  .rank{ gap: 17px; }
+  .rankrow{ gap: 9px; align-items: flex-start; }
+  .rankrow > .grow{
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    grid-template-areas: "lbl lbl lbl" "bar val share";
+    align-items: center;
+    column-gap: 9px;
+    row-gap: 8px;
+  }
+  /* يرفع أبناء الترويسة إلى شبكة الصف ليُعاد ترتيبهم دون تغيير البنية */
+  .rkhead{ display: contents; }
+  .rklbl{
+    grid-area: lbl;
+    white-space: normal;
+    text-overflow: clip;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-height: 1.45;
+    font-size: 13.5px;
+  }
+  .rktrack{ grid-area: bar; height: 11px; }
+  .rkval{ grid-area: val; font-size: 15px; line-height: 1; }
+  .rkshare{
+    grid-area: share;
+    padding-inline-start: 1px;
+    color: var(--text-3);
+    line-height: 1;
+  }
+  .rk{ width: 24px; height: 24px; border-radius: 8px; margin-top: 1px; }
+
   /* ترويسة الصفحة: العنوان سطر، والإجراءات سطر كامل العرض */
   .pagehead{ padding-block:10px; gap:8px; }
   .pagehead > .row{ margin-inline-start:0; width:100%; }
