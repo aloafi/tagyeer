@@ -1,0 +1,37 @@
+/* الأساس العام — يبقى صغيراً لأن كل واجهة تحمل أنماطها داخل جذرها الخاص. */
+html, body, #root { margin: 0; padding: 0; min-height: 100%; }
+html { background: #F5F7F6; }
+body { -webkit-font-smoothing: antialiased; }
+
+.admin-root,
+.participant-root { min-height: 100svh; }
+
+/* يُستبدل محتوى الصفحة أثناء التنقّل، فنمنع وميض شريط التمرير */
+#root { isolation: isolate; }
+
+.route-fallback {
+  min-height: 60svh;
+  display: grid;
+  place-items: center;
+  font-family: "IBM Plex Sans Arabic", "Segoe UI", system-ui, sans-serif;
+  color: #55665E;
+  font-size: 14px;
+}
+.route-fallback .ring {
+  width: 26px; height: 26px; margin-inline-end: 10px;
+  border: 2.5px solid #DCEAE3; border-top-color: #0B4F3A;
+  border-radius: 50%; animation: rf-spin .8s linear infinite;
+}
+@keyframes rf-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .route-fallback .ring { animation-duration: .01ms; }
+}
+
+/* غلاف للطبقات العائمة (التنبيه والنافذة): يرث متغيّرات الهوية
+   دون أن يضيف خلفية أو ارتفاعاً إلى تدفّق الصفحة. */
+.admin-root.ui-overlay,
+.participant-root.ui-overlay {
+  display: contents;
+  min-height: 0;
+  background: none;
+}

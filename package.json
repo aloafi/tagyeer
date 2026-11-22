@@ -1,0 +1,23 @@
+{
+  "name": "tagyeer",
+  "private": true,
+  "version": "2.0.0",
+  "type": "module",
+  "scripts": {
+    "scope": "node scope-css.mjs src/styles/admin.css src/styles/admin.scoped.css \".admin-root\" && node scope-css.mjs src/styles/participant.css src/styles/participant.scoped.css \".participant-root\"",
+    "prebuild": "npm run scope",
+    "dev": "npm run scope && vite",
+    "build": "vite build",
+    "preview": "vite preview --port 4173"
+  },
+  "dependencies": {
+    "qrcode-generator": "2.0.4",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-router-dom": "6.26.2"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "4.3.1",
+    "vite": "5.4.8"
+  }
+}
