@@ -488,6 +488,8 @@ mark{background:var(--gold-100);color:inherit;border-radius:3px;padding:0 2px}
 
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms !important;transition-duration:.01ms !important}}
 
+.botnav{display:none}
+
 /* ==========================================================
    طبقة الجوال
    تُضاف فوق التصميم القائم ولا تمسّ أي قاعدة للكمبيوتر:
@@ -674,6 +676,63 @@ mark{background:var(--gold-100);color:inherit;border-radius:3px;padding:0 2px}
   .qb .qhead .chip{ order:10; }
   .qb .qhead .iconbtn{ order:11; }
   .qb .qhead .caret{ order:12; margin-inline-start:auto; }
+}
+
+/* ---------- شريط التنقّل السفلي ----------
+   أربع وجهات في متناول الإبهام، تحلّ محل فتح القائمة في كل مرة. */
+@media (max-width:980px){
+  .botnav{
+    position:fixed; inset-inline:0; bottom:0; z-index:60;
+    display:grid; grid-template-columns:repeat(4,1fr);
+    background:color-mix(in srgb, var(--surface) 92%, transparent);
+    -webkit-backdrop-filter:saturate(180%) blur(12px);
+    backdrop-filter:saturate(180%) blur(12px);
+    border-top:1px solid var(--border);
+    padding-bottom:env(safe-area-inset-bottom);
+    box-shadow:0 -1px 14px rgba(11,42,32,.06);
+  }
+  .bnitem{
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px;
+    min-height:58px; padding:8px 4px 7px;
+    color:var(--text-3); text-decoration:none; font-size:12px; font-weight:500;
+    line-height:normal; position:relative;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .bnitem svg{ width:21px; height:21px; }
+  .bnitem.on{ color:var(--brand); font-weight:700; }
+  .bnitem.on::before{
+    content:""; position:absolute; top:0; inset-inline:22%;
+    height:2.5px; border-radius:0 0 3px 3px; background:var(--brand);
+  }
+  .bnitem:active{ background:var(--brand-50); }
+
+  /* مساحة أسفل المحتوى حتى لا يختفي آخره تحت الشريط */
+  .content{ padding-bottom:calc(76px + env(safe-area-inset-bottom)); }
+  /* التنبيه يرتفع فوق الشريط */
+  .toast{ bottom:calc(72px + env(safe-area-inset-bottom)); }
+}
+
+/* ---------- شريط الجلسات المنزلق ----------
+   تكديس البطاقات رأسياً كان يطيل الصفحة؛ على الجوال تصير صفاً واحداً
+   ينزلق أفقياً مع التقاط لكل بطاقة. */
+@media (max-width:980px){
+  .sgrid.rail{
+    display:flex; gap:12px;
+    overflow-x:auto; overflow-y:visible;
+    scroll-snap-type:x mandatory;
+    overscroll-behavior-x:contain;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    /* تبلغ البطاقات حافة الشاشة فيتضح أن خلفها المزيد */
+    margin-inline:calc(var(--gutter) * -1);
+    padding-inline:var(--gutter);
+    padding-bottom:4px;
+  }
+  .sgrid.rail::-webkit-scrollbar{ display:none; }
+  .sgrid.rail > *{
+    flex:0 0 min(82vw, 330px);
+    scroll-snap-align:center;
+  }
 }
 
 @media (max-width:980px){

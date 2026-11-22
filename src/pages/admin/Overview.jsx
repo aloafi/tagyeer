@@ -48,7 +48,8 @@ export default function Overview() {
             <h2 className="t-lg">جلسات مفتوحة الآن</h2>
             <Chip kind="live" dot="pulse">{m.live.length}</Chip>
           </div>
-          <div className="sgrid">
+          {/* على الجوال يتحوّل هذا الصف إلى شريط ينزلق أفقياً بدل تكديس البطاقات */}
+          <div className="sgrid rail">
             {m.live.map((s) => <SessionCard key={s.id} s={s} />)}
           </div>
         </div>

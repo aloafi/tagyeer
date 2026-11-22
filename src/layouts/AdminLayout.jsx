@@ -29,6 +29,14 @@ const NAV = [
   { to: "/sessions",  icon: "wifi",  label: "الجلسات", count: "sessions" },
 ];
 
+/* وجهات شريط الجوال السفلي — الأربع الأكثر استخداماً في متناول الإبهام */
+const BOTTOM_NAV = [
+  { to: "/dashboard", icon: "grid",  label: "الرئيسية" },
+  { to: "/sessions",  icon: "wifi",  label: "الجلسات" },
+  { to: "/quizzes",   icon: "book",  label: "التجارب" },
+  { to: "/settings",  icon: "gear",  label: "الإعدادات" },
+];
+
 export default function AdminLayout() {
   const [head, setHead] = useState(null);
   const [navOpen, setNavOpen] = useState(false);
@@ -125,6 +133,21 @@ export default function AdminLayout() {
                 <Outlet />
               </div>
             </div>
+
+            {/* شريط تنقّل سفلي للجوال — مخفيّ تماماً على الشاشات الكبيرة */}
+            <nav className="botnav" aria-label="التنقّل السريع">
+              {BOTTOM_NAV.map((n) => (
+                <NavLink
+                  key={n.to}
+                  to={n.to}
+                  end={n.end}
+                  className={({ isActive }) => "bnitem" + (isActive ? " on" : "")}
+                >
+                  <Icon name={n.icon} />
+                  <span>{n.label}</span>
+                </NavLink>
+              ))}
+            </nav>
           </div>
         </div>
       </div>
