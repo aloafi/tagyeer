@@ -75,7 +75,7 @@ export default function AdminLayout() {
           <aside className={"sidebar" + (navOpen ? " open" : "")}>
             <div className="brandbox">
               <div className="bm"><Wordmark /></div>
-              <div><b>منصة أثر</b><span>جلسات تفاعلية في التغيير والثقافة المؤسسية والابتكار</span></div>
+              <div><b>أثر</b><span>جلسات تفاعلية في التغيير والثقافة المؤسسية والابتكار</span></div>
             </div>
 
             <div className="navgrp">العمل</div>
@@ -115,7 +115,7 @@ export default function AdminLayout() {
               <button className="iconbtn" onClick={() => setNavOpen(true)} aria-label="القائمة">
                 <Icon name="menu" strokeWidth={1.8} />
               </button>
-              <b style={{ fontSize: 15, color: "var(--brand-800)" }}>منصة أثر</b>
+              <b style={{ fontSize: 15, color: "var(--brand-800)" }}>أثر</b>
             </div>
 
             <div className="pagehead">

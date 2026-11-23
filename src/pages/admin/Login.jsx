@@ -37,7 +37,7 @@ export default function Login() {
       <div id="login" style={{ display: "flex" }}>
         <form className="box" onSubmit={submit}>
           <div className="logomark"><Icon name="refresh" /></div>
-          <h1 style={{ fontSize: 20, color: "var(--brand-800)" }}>منصة أثر</h1>
+          <h1 style={{ fontSize: 20, color: "var(--brand-800)" }}>أثر</h1>
           <p className="t-sm muted" style={{ margin: "6px 0 20px" }}>لوحة تحكم التجارب التفاعلية</p>
 
           <input
