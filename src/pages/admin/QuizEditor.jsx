@@ -1,4 +1,5 @@
-/* محرر التجربة — معالج من أربع خطوات: المعلومات، الأسئلة، المستويات، المراجعة. */
+/* محرر التجربة — التحرير يجري على محاكاة شاشة المشارك نفسها،
+   ومعها تبويبان للمستويات والمراجعة. */
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { usePageHead } from "../../layouts/AdminLayout.jsx";
@@ -11,12 +12,12 @@ import { ErrorBox, Spinner } from "../../components/ui/Primitives.jsx";
 import Icon from "../../components/ui/Icon.jsx";
 import QuestionList from "./editor/QuestionList.jsx";
 import BandsEditor from "./editor/BandsEditor.jsx";
-import PhonePreview from "./editor/PhonePreview.jsx";
+import Simulator from "./editor/Simulator.jsx";
 import { blankQuiz, qtypeOf, TYPES } from "../../lib/config.js";
 import { getQuiz, saveQuiz, deleteQuiz, createSession } from "../../lib/api.js";
 import { participantUrl } from "../../lib/links.js";
 
-const STEPS = ["معلومات التجربة", "الأسئلة", "المستويات", "المراجعة"];
+const TABS = ["المحاكاة", "المستويات", "المراجعة"];
 const scored = (q) => qtypeOf(q) !== "text";
 
 const bound = (qs, pick) =>
@@ -36,11 +37,14 @@ export default function QuizEditor() {
 
   const [quiz, setQuiz] = useState(() => (id ? null : blankQuiz()));
   const [err, setErr] = useState(null);
-  const [step, setStep] = useState(0);
+  const [tab, setTab] = useState(0);
   const [dirty, setDirty] = useState(false);
   const [saved, setSaved] = useState(false);
   const [openSet, setOpenSet] = useState(() => new Set());
   const [focusIdx, setFocusIdx] = useState(0);
+  /* الشاشة المعروضة في المحاكاة: "start" أو رقم السؤال أو "result" */
+  const [sel, setSel] = useState("start");
+  const [listView, setListView] = useState(false);
 
   useEffect(() => {
     let alive = true;
@@ -69,17 +73,23 @@ export default function QuizEditor() {
   const lo = useMemo(() => (quiz ? bound(quiz.questions || [], (v) => Math.min(...v)) : 0), [quiz]);
   const hi = useMemo(() => (quiz ? bound(quiz.questions || [], (v) => Math.max(...v)) : 0), [quiz]);
 
-  const goStep = useCallback((n) => {
-    setStep(Math.max(0, Math.min(3, n)));
+  const goTab = useCallback((n) => {
+    setTab(Math.max(0, Math.min(TABS.length - 1, n)));
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   const save = useCallback(async () => {
     if (!quiz) return null;
-    if (!String(quiz.title || "").trim()) { toast("اكتب عنوان التجربة", true); goStep(0); return null; }
-    if (!quiz.questions.length) { toast("أضف سؤالاً واحداً على الأقل", true); goStep(1); return null; }
+    if (!String(quiz.title || "").trim()) {
+      toast("اكتب اسم التجربة على شاشة البداية", true);
+      goTab(0); setSel("start"); return null;
+    }
+    if (!quiz.questions.length) { toast("أضف سؤالاً واحداً على الأقل", true); goTab(0); return null; }
     const bad = quiz.questions.findIndex((x) => !String(x.text || "").trim());
-    if (bad > -1) { toast("السؤال رقم " + (bad + 1) + " بلا نص", true); goStep(1); setOpenSet(new Set([bad])); return null; }
+    if (bad > -1) {
+      toast("السؤال رقم " + (bad + 1) + " بلا نص", true);
+      goTab(0); setSel(bad); setOpenSet(new Set([bad])); return null;
+    }
     try {
       const out = await saveQuiz(pw, quiz);
       setQuiz(out);
@@ -90,7 +100,7 @@ export default function QuizEditor() {
       if (!id && out.id) nav("/quizzes/" + out.id + "/edit", { replace: true });
       return out;
     } catch (e) { toast(e.message, true); return null; }
-  }, [quiz, pw, toast, goStep, refreshQuizzes, id, nav]);
+  }, [quiz, pw, toast, goTab, refreshQuizzes, id, nav]);
 
   const preview = useCallback(async () => {
     if (!quiz?.id) { toast("احفظ التجربة أولاً", true); return; }
@@ -107,7 +117,7 @@ export default function QuizEditor() {
       crumb: [{ label: "التجارب", to: "/quizzes" }, { label: id ? "تعديل التجربة" : "تجربة جديدة" }],
       actions: (
         <>
-          <button className="btn ghost sm" onClick={preview}>معاينة</button>
+          <button className="btn ghost sm" onClick={preview}>فتح على الجوال</button>
           <button className="btn sm" onClick={save}>حفظ</button>
         </>
       ),
@@ -133,7 +143,7 @@ export default function QuizEditor() {
   (quiz.questions || []).forEach((x) => { const t = qtypeOf(x); counts[t] = (counts[t] || 0) + 1; });
 
   const problems = [];
-  if (!quiz.title) problems.push("التجربة بلا عنوان.");
+  if (!quiz.title) problems.push("التجربة بلا اسم.");
   if (!quiz.questions.length) problems.push("لا توجد أسئلة.");
   (quiz.questions || []).forEach((x, i) => { if (!String(x.text || "").trim()) problems.push("السؤال رقم " + (i + 1) + " بلا نص."); });
   if (quiz.questions.some(scored) && !quiz.bands.length)
@@ -142,103 +152,51 @@ export default function QuizEditor() {
   return (
     <>
       <div className="steps">
-        {STEPS.map((label, i) => (
-          <button key={i} className={"step" + (i === step ? " on" : "") + (i < step ? " done" : "")} onClick={() => goStep(i)}>
+        {TABS.map((label, i) => (
+          <button key={i} className={"step" + (i === tab ? " on" : "")} onClick={() => goTab(i)}>
             <span className="n">{i + 1}</span>{label}
           </button>
         ))}
+        {tab === 0 && (
+          <div className="seg sp simview">
+            <button className={listView ? "" : "on"} onClick={() => setListView(false)} title="محاكاة الجهاز">
+              <Icon name="present" strokeWidth={1.8} />
+            </button>
+            <button className={listView ? "on" : ""} onClick={() => setListView(true)} title="قائمة الأسئلة">
+              <Icon name="rows" strokeWidth={1.8} />
+            </button>
+          </div>
+        )}
       </div>
 
-      {step === 0 && (
+      {tab === 0 && (
         <div className="wizpane on">
-          <div className="card pad readable">
-            <div className="formgrid">
-              <div style={{ maxWidth: 110 }}>
-                <label className="lbl">الأيقونة</label>
-                <input className="inp" maxLength={4} style={{ textAlign: "center", fontSize: 22 }}
-                  value={quiz.cover_emoji || ""} onChange={(e) => patch({ cover_emoji: e.target.value })} />
-              </div>
-              <div className="grow">
-                <label className="lbl">اسم التجربة</label>
-                <input className="inp" placeholder="مثال: ما مدى جاهزيتك للتغيير؟" value={quiz.title || ""} onChange={(e) => patch({ title: e.target.value })} />
-              </div>
-              <div className="full">
-                <label className="lbl">العبارة التعريفية</label>
-                <input className="inp" placeholder="خمس عبارات فقط تفصلك عن معرفة مستوى جاهزيتك" value={quiz.subtitle || ""} onChange={(e) => patch({ subtitle: e.target.value })} />
-              </div>
-              <div>
-                <label className="lbl">ملاحظة قبل البدء</label>
-                <input className="inp" placeholder="لا توجد إجابة صحيحة أو خاطئة" value={quiz.intro || ""} onChange={(e) => patch({ intro: e.target.value })} />
-              </div>
-              <div>
-                <label className="lbl">عبارة ختامية</label>
-                <input className="inp" placeholder="التغيير يبدأ بك" value={quiz.footer_note || ""} onChange={(e) => patch({ footer_note: e.target.value })} />
-              </div>
-            </div>
-
-            <hr className="divider" />
-
-            <div style={{ display: "grid", gap: 12 }}>
-              <label className="sw">
-                <input type="checkbox" checked={quiz.ask_name !== false} onChange={(e) => patch({ ask_name: e.target.checked })} />
-                <i /><span>طلب اسم المشارك <span className="dim t-xs">— أوقفه لمشاركة مجهولة</span></span>
-              </label>
-              <label className="sw">
-                <input type="checkbox" checked={quiz.show_score !== false} onChange={(e) => patch({ show_score: e.target.checked })} />
-                <i /><span>إظهار الدرجة للمشارك</span>
-              </label>
-              <label className="sw">
-                <input type="checkbox" checked={!!quiz.ask_meta} onChange={(e) => patch({ ask_meta: e.target.checked })} />
-                <i /><span>طلب حقل الجهة إلزامياً عند الدخول</span>
-              </label>
-              {quiz.ask_meta && (
-                <div style={{ maxWidth: 300 }}>
-                  <input className="inp" placeholder="الإدارة / الجهة" value={quiz.meta_label || ""} onChange={(e) => patch({ meta_label: e.target.value })} />
-                  <p className="hint">هذا الحقل هو أساس مصفوفة مقارنة الجهات — فعّليه إذا كنتِ تريدين مقارنة النتائج بين الإدارات.</p>
-                </div>
-              )}
-            </div>
-          </div>
+          {listView ? (
+            <QuestionList
+              questions={quiz.questions || []}
+              setQuestions={setQuestions}
+              openSet={openSet}
+              setOpenSet={setOpenSet}
+              onFocus={(i) => { setFocusIdx(i); setSel(i); }}
+            />
+          ) : (
+            <Simulator quiz={quiz} patch={patch} sel={sel} setSel={setSel} lo={lo} hi={hi} />
+          )}
         </div>
       )}
 
-      {step === 1 && (
-        <div className="wizpane on">
-          <div id="qlayout" style={{ display: "grid", gap: 22, gridTemplateColumns: "minmax(0,1fr) 340px" }}>
-            <div>
-              <QuestionList
-                questions={quiz.questions || []}
-                setQuestions={setQuestions}
-                openSet={openSet}
-                setOpenSet={setOpenSet}
-                onFocus={setFocusIdx}
-              />
-            </div>
-            <div className="preview">
-              <p className="lbl">معاينة المشارك</p>
-              <div className="phone">
-                <PhonePreview
-                  questions={quiz.questions || []}
-                  index={openSet.size ? Math.min(...openSet) : focusIdx}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {step === 2 && (
+      {tab === 1 && (
         <div className="wizpane on">
           <BandsEditor bands={quiz.bands || []} setBands={setBands} lo={lo} hi={hi} />
         </div>
       )}
 
-      {step === 3 && (
+      {tab === 2 && (
         <div className="wizpane on">
           <div className="chartgrid">
             <div className="card pad">
               <div style={{ fontSize: 28 }}>{quiz.cover_emoji || "🌱"}</div>
-              <h3 className="t-lg" style={{ margin: "6px 0 3px" }}>{quiz.title || "تجربة بدون عنوان"}</h3>
+              <h3 className="t-lg" style={{ margin: "6px 0 3px" }}>{quiz.title || "تجربة بدون اسم"}</h3>
               <p className="t-sm muted">{quiz.subtitle || ""}</p>
               <div className="row" style={{ marginTop: 12 }}>
                 <span className="chip">{quiz.questions.length} سؤال</span>
@@ -292,8 +250,8 @@ export default function QuizEditor() {
       )}
 
       <div className="wizfoot">
-        <button className="btn ghost" style={{ visibility: step === 0 ? "hidden" : "visible" }} onClick={() => goStep(step - 1)}>السابق</button>
-        <button className="btn" style={{ visibility: step === 3 ? "hidden" : "visible" }} onClick={() => goStep(step + 1)}>التالي</button>
+        <button className="btn ghost" style={{ visibility: tab === 0 ? "hidden" : "visible" }} onClick={() => goTab(tab - 1)}>السابق</button>
+        <button className="btn" style={{ visibility: tab === TABS.length - 1 ? "hidden" : "visible" }} onClick={() => goTab(tab + 1)}>التالي</button>
         <div className="sp row">
           <span className="t-xs dim">{dirty ? "تغييرات غير محفوظة" : saved ? "محفوظ" : ""}</span>
           {quiz.id ? <button className="btn ghost sm" onClick={removeQuiz}>حذف التجربة</button> : null}

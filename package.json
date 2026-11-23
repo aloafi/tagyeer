@@ -4,7 +4,7 @@
   "version": "2.0.0",
   "type": "module",
   "scripts": {
-    "scope": "node scope-css.mjs src/styles/admin.css src/styles/admin.scoped.css \".admin-root\" && node scope-css.mjs src/styles/participant.css src/styles/participant.scoped.css \".participant-root\"",
+    "scope": "node scope-css.mjs src/styles/admin.css src/styles/admin.scoped.css \".admin-root\" && node scope-css.mjs src/styles/participant.css src/styles/participant.scoped.css \".participant-root\" --container \".simcanvas\"",
     "prebuild": "npm run scope",
     "dev": "npm run scope && vite",
     "build": "vite build",

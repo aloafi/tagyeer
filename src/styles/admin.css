@@ -272,20 +272,6 @@ body.slim .brandbox{justify-content:center;padding:4px 0 14px}
 .typecard b{display:block;font-size:13.5px;font-weight:600}
 .typecard span{font-size:11.5px;color:var(--text-3);line-height:1.5}
 
-.preview{position:sticky;top:92px}
-.phone{background:var(--surface);border:1px solid var(--border-strong);border-radius:24px;padding:16px;box-shadow:var(--sh-md);max-width:330px;margin-inline-start:auto}
-.phone .pbar{height:5px;border-radius:999px;background:var(--brand-100);margin-bottom:14px;overflow:hidden}
-.phone .pbar i{display:block;height:100%;background:var(--brand);border-radius:999px}
-.phone .pq{font-size:16px;font-weight:600;color:var(--brand-800);margin-bottom:12px;line-height:1.55}
-.phone .pnum{font-size:11.5px;color:var(--gold);font-weight:600;margin-bottom:7px}
-.popt{display:flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:12px;padding:9px 11px;margin-bottom:7px;font-size:13px}
-.popt .tick{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--border-strong);flex:none}
-.popt .sh{width:24px;height:24px;border-radius:7px;display:grid;place-items:center;color:#fff;font-size:11px;flex:none}
-.ptf{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.ptf .popt{flex-direction:column;justify-content:center;text-align:center;padding:14px 8px;margin:0}
-.ptf .badge{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:17px;font-weight:700}
-.pta{border:1px solid var(--border);border-radius:12px;padding:11px;min-height:76px;color:var(--text-3);font-size:13px}
-
 .bandline{display:flex;height:32px;border-radius:999px;overflow:hidden;border:1px solid var(--border);margin-bottom:14px}
 .bandline div{display:grid;place-items:center;color:#fff;font-size:11.5px;font-weight:600;min-width:0;overflow:hidden;white-space:nowrap}
 .band{display:grid;gap:9px;grid-template-columns:76px 76px 1.2fr 2fr 56px 48px 40px 36px;align-items:start;margin-bottom:9px}
@@ -301,17 +287,136 @@ body.slim .brandbox{justify-content:center;padding:4px 0 14px}
 .note.warn{background:var(--gold-50);color:var(--gold-700);border:1px solid var(--gold-100)}
 .note.ok{background:var(--ok-50);color:var(--ok);border:1px solid #D6EDE2}
 .note.info{background:var(--brand-50);color:var(--brand);border:1px solid var(--brand-100)}
-@media (max-width:980px){
-  #qlayout{grid-template-columns:minmax(0,1fr) !important}
-  .preview{position:static;order:-1}
-  .phone{max-width:100%;margin:0}
-}
 @media (max-width:860px){
   .band,.bandhead{grid-template-columns:1fr 1fr;gap:7px}
   .bandhead{display:none}
   .band{border:1px solid var(--border);border-radius:var(--r);padding:11px;margin-bottom:10px}
   .band .wide{grid-column:1/-1}
 }
+
+/* ================= محاكاة شاشة المشارك داخل المحرر ================= */
+/* الفكرة: نعرض واجهة المشارك الحقيقية داخل إطار جهاز، ونجعل نصوصها
+   قابلة للكتابة في مكانها. أنماط الواجهة تأتي من ورقة المشارك نفسها
+   (نسخة .simcanvas المقيسة بوحدات الحاوية)، وما هنا هو الإطار وأدوات
+   التحرير فقط. */
+.simwrap{display:grid;gap:14px}
+
+/* شريط الشاشات: البداية · أرقام الأسئلة · النتيجة */
+.simrail{display:flex;align-items:center;gap:7px;flex-wrap:wrap;
+  background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:9px 11px;box-shadow:var(--sh-xs)}
+.simchip{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 12px;
+  border-radius:10px;border:1px solid var(--border);background:var(--surface-2);
+  color:var(--text-2);font-size:13px;font-weight:500;line-height:normal;cursor:pointer;
+  transition:border-color .15s,background .15s,color .15s}
+.simchip svg{width:16px;height:16px}
+.simchip:hover{border-color:var(--brand-300);color:var(--brand)}
+.simchip.on{background:var(--brand);border-color:var(--brand);color:#fff}
+.simchip.num{width:34px;padding:0;justify-content:center;font-weight:700;font-variant-numeric:tabular-nums}
+.simchip.num.empty{border-style:dashed;color:var(--text-3)}
+.simchip.add{border-style:dashed;background:var(--brand-50);border-color:var(--brand-100);color:var(--brand)}
+.simsep{width:1px;height:20px;background:var(--border);flex:none}
+.simtip{margin-inline-start:auto;display:inline-flex;align-items:center;gap:6px;
+  font-size:12px;color:var(--text-3);padding-inline-end:4px}
+.simtip svg{width:15px;height:15px;color:var(--brand-400)}
+
+.simadd{position:relative}
+.simaddmenu{position:absolute;top:calc(100% + 6px);inset-inline-start:0;z-index:20;display:none;
+  min-width:238px;background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;box-shadow:var(--sh-md);padding:5px}
+.simadd:hover .simaddmenu,.simadd:focus-within .simaddmenu{display:block}
+.simaddmenu button{display:flex;gap:9px;align-items:flex-start;width:100%;text-align:start;
+  background:none;border:0;padding:8px 9px;border-radius:9px;cursor:pointer;color:var(--text);line-height:normal}
+.simaddmenu button:hover{background:var(--brand-50)}
+.simaddmenu svg{width:17px;height:17px;color:var(--brand);margin-top:2px;flex:none}
+.simaddmenu b{display:block;font-size:13px;font-weight:600;margin-bottom:2px}
+.simaddmenu span span{display:block;font-size:11.5px;color:var(--text-3);line-height:1.5}
+
+/* الجهاز ولوحة الضبط */
+.simstage{display:grid;grid-template-columns:minmax(330px,418px) minmax(290px,430px);
+  gap:18px;align-items:start;justify-content:center}
+.simdev{background:#0D1A15;border-radius:34px;padding:9px;box-shadow:var(--sh-md);position:sticky;top:12px}
+.simtop{display:flex;align-items:center;gap:4px;height:22px;padding:0 15px;
+  color:rgba(255,255,255,.7);font-size:11px}
+.simtime{font-weight:600;letter-spacing:.3px}
+.simdot{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.4)}
+.simdot:first-of-type{margin-inline-start:auto}
+.simscreen{border-radius:27px;overflow:hidden;background:#F7F8F5;height:min(72vh,690px)}
+/* الحاوية التي تُقاس بها وحدات المشارك، فيظهر النص بحجمه على الجوال */
+.participant-root.simcanvas{container-type:size;height:100%;min-height:0;
+  overflow-y:auto;overflow-x:hidden;background-attachment:scroll}
+.simcanvas .stage{padding-bottom:26px}
+.simfade{flex:1;display:flex;flex-direction:column;min-height:0}
+
+.siminspect{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:14px 15px;box-shadow:var(--sh-xs);position:sticky;top:12px}
+.simset{display:grid;gap:11px}
+.simtypes{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.simtype{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:11px;
+  border:1px solid var(--border);background:var(--surface-2);color:var(--text-2);
+  font-size:12.5px;font-weight:500;line-height:normal;text-align:start;cursor:pointer;
+  transition:border-color .15s,background .15s,color .15s}
+.simtype svg{width:17px;height:17px;flex:none}
+.simtype:hover{border-color:var(--brand-300);color:var(--brand)}
+.simtype.on{background:var(--brand-50);border-color:var(--brand);color:var(--brand-800);font-weight:600}
+.simacts{display:flex;flex-wrap:wrap;gap:7px}
+.simacts .btn.danger{color:var(--danger);border-color:var(--danger-100)}
+.simacts .btn.danger:hover{background:var(--danger-50);border-color:var(--danger)}
+.simbands{display:grid;gap:6px}
+.simband{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;
+  border:1px solid var(--border);background:var(--surface-2);color:var(--text-2);
+  font-size:13px;line-height:normal;text-align:start;cursor:pointer}
+.simband:hover{border-color:var(--brand-300)}
+.simband.on{border-color:var(--brand);background:var(--brand-50);color:var(--brand-800)}
+.simband .bdot{width:9px;height:9px;border-radius:3px;flex:none}
+.simempty{margin:0;text-align:center;color:var(--text-3);font-size:13px}
+.simview .iconbtn,.simview button{min-height:34px}
+
+/* ---- حقول التحرير داخل المحاكاة: ترث الخط فلا تبدو كحقول نموذج ---- */
+.simcanvas .ed{
+  appearance:none;-webkit-appearance:none;background:transparent;border:0;outline:0;margin:0;
+  font:inherit;color:inherit;letter-spacing:inherit;line-height:inherit;text-align:inherit;
+  width:100%;display:block;padding:2px 6px;border-radius:9px;resize:none;overflow:hidden;
+  box-shadow:inset 0 0 0 1px transparent;transition:background .15s,box-shadow .15s}
+.simcanvas .ed:hover{background:rgba(11,79,58,.05);box-shadow:inset 0 0 0 1px rgba(11,79,58,.16)}
+.simcanvas .ed:focus{background:rgba(11,79,58,.06);box-shadow:inset 0 0 0 2px var(--green)}
+.simcanvas .ed::placeholder{color:#A3B2AA;opacity:1}
+.simcanvas .ed.emo{padding:0;text-align:center}
+/* الأيقونة في شاشة البداية تأخذ حجمها من الصفحة الحقيقية (40px) */
+.simcanvas .emblem{font-size:clamp(30px,10cqw,40px);line-height:1}
+.simcanvas .ed.metalbl{display:inline-block;width:auto;max-width:190px;padding:1px 5px}
+/* العناصر المركزية تحتاج عرضاً كاملاً ليملأه الحقل */
+.simcanvas .hero h1,.simcanvas .lede,.simcanvas .hint,
+.simcanvas .rlevel,.simcanvas .rmsg,.simcanvas .rfoot,.simcanvas .qtext{width:100%}
+
+/* صفّ الخيار في وضع التحرير: نص قابل للكتابة + درجة + حذف */
+.simcanvas .opt.simopt{cursor:default}
+.simcanvas .opt.simopt:hover{border-color:var(--line);background:#fff}
+.simcanvas .opt.simopt .ed{flex:1;min-width:0}
+.simcanvas .optedit{display:flex;align-items:center;gap:4px;flex:none}
+.simcanvas .optsc input{width:40px;height:27px;border:1px dashed rgba(11,79,58,.35);
+  border-radius:8px;background:rgba(11,79,58,.04);text-align:center;
+  font-size:12.5px;font-weight:700;color:var(--green);font-variant-numeric:tabular-nums;
+  outline:none;-moz-appearance:textfield;appearance:textfield}
+.simcanvas .optsc input:focus{border-style:solid;border-color:var(--green);background:#fff}
+.simcanvas .optsc input::-webkit-outer-spin-button,
+.simcanvas .optsc input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.simcanvas .optx{width:27px;height:27px;flex:none;border:0;background:none;border-radius:8px;
+  color:#A3B2AA;cursor:pointer;display:grid;place-items:center}
+.simcanvas .optx:hover{background:#FCF3F2;color:#A4342C}
+.simcanvas .optx svg{width:15px;height:15px}
+.simcanvas .optadd{display:inline-flex;align-items:center;justify-content:center;gap:6px;width:100%;
+  border:1.5px dashed rgba(11,79,58,.3);background:rgba(11,79,58,.03);color:var(--green);
+  border-radius:var(--r-md);padding:12px;font-size:14px;font-weight:600;cursor:pointer;line-height:normal}
+.simcanvas .optadd:hover{background:rgba(11,79,58,.07);border-color:var(--green)}
+.simcanvas .optadd svg{width:16px;height:16px}
+
+/* ما لا يُحرَّر: حقول المشارك وزر البدء — تُعرض كما يراها هو */
+.simcanvas .input.ph,.simcanvas .ta.ph{color:#9FB0A7;display:flex;align-items:center;user-select:none}
+.simcanvas .ta.ph{align-items:flex-start;min-height:96px}
+.simcanvas .simbtn{display:inline-flex;align-items:center;justify-content:center;
+  cursor:default;user-select:none;text-align:center}
+.simcanvas .link{cursor:default}
 
 /* ---------- شريط التجارب في «نظرة عامة» ---------- */
 /* سطر واحد فوق الجلسات: كل تجربة بطاقة مختصرة، وينزلق أفقياً إن زادت عن العرض */
@@ -551,6 +656,15 @@ mark{background:var(--gold-100);color:inherit;border-radius:3px;padding:0 2px}
 
 /* ---------- مقاسات اللمس وقابلية القراءة ---------- */
 @media (max-width:860px){
+  /* أزرار المحاكاة بحجم يناسب الإبهام */
+  .simchip{ min-height:44px; padding:0 14px; }
+  .simchip.num{ width:44px; }
+  .simtype{ min-height:44px; }
+  .simcanvas .optx{ width:44px; height:44px; }
+  .simcanvas .optsc input{ width:48px; height:44px; font-size:14px; }
+  .simband{ min-height:44px; }
+  .band input[type=color]{ min-height:44px; }
+
   /* 16 بكسل تمنع تكبير iOS التلقائي عند التركيز على الحقول */
   .inp{ min-height:44px; font-size:16px; }
   .inp.sm{ min-height:44px; }
@@ -559,7 +673,7 @@ mark{background:var(--gold-100);color:inherit;border-radius:3px;padding:0 2px}
 
   .btn{ min-height:46px; padding-inline:20px; }
   .btn.sm{ min-height:44px; padding:8px 16px; font-size:14px; }
-  .btn.xs{ min-height:38px; padding:6px 14px; }
+  .btn.xs{ min-height:44px; padding:8px 14px; font-size:13.5px; }
   .iconbtn{ width:44px; height:44px; }
   .navitem{ min-height:48px; }
   .step{ min-height:44px; }
@@ -618,8 +732,30 @@ mark{background:var(--gold-100);color:inherit;border-radius:3px;padding:0 2px}
   .inp, .opt, .pickopt{ scroll-margin-block:90px 120px; }
 }
 
+/* المحاكاة على الشاشات المتوسطة: الجهاز فوق ولوحة الضبط تحته */
+@media (max-width:1100px){
+  .simstage{grid-template-columns:minmax(0,1fr)}
+  .simdev{position:static;justify-self:center;width:min(100%,418px)}
+  .siminspect{position:static}
+}
+
 /* ---------- إعادة ترتيب العناصر على شاشة الهاتف ---------- */
 @media (max-width:640px){
+  /* شريط الشاشات ينزلق في سطر واحد بدل أن يلتفّ على أربعة أسطر */
+  .simrail{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;
+    margin-inline:calc(var(--gutter) * -1);padding-inline:var(--gutter);border-radius:0;
+    border-inline:0}
+  .simrail::-webkit-scrollbar{display:none}
+  .simchip{flex:none}
+  .simscreen{height:min(66vh,560px)}
+  .simtypes{grid-template-columns:1fr}
+  .simdev{padding:7px;border-radius:28px}
+  .simscreen{border-radius:22px}
+  /* نص الخيار يأخذ السطر كاملاً، وأدوات التحرير تحته */
+  .simcanvas .opt.simopt{flex-wrap:wrap;row-gap:4px}
+  .simcanvas .optedit{flex-basis:100%;justify-content:flex-end;margin-top:2px}
+  .simcanvas .opt.tfopt .optedit{justify-content:center}
+
   /* بطاقة الترتيب على الجوال: العنوان يأخذ سطره كاملاً (حتى سطرين)،
      ثم الشريط والرقم والنسبة في سطر تحته. العناوين الطويلة تظهر كما هي
      بدل أن تُقصّ، والرقم يبقى داخل البطاقة. لا تمسّ هذه القواعد الكمبيوتر. */
