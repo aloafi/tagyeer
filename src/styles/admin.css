@@ -566,7 +566,25 @@ mark{background:var(--gold-100);color:inherit;border-radius:3px;padding:0 2px}
 
 #proj{position:fixed;inset:0;z-index:90;background:var(--brand-800);color:#fff;display:none;padding:clamp(18px,4vw,40px);overflow:auto}
 #proj.on{display:grid;place-items:center}
-.pgrid{display:grid;gap:clamp(20px,4vw,52px);grid-template-columns:1fr auto;align-items:center;max-width:1180px;width:100%}
+/* خلفية شاشة العرض: علامات «تغيير» مائلة تنزل ببطء خلف المحتوى */
+.projfall{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;
+  contain:paint;user-select:none}
+.projfall span{position:absolute;top:0;inset-inline-start:var(--x);width:var(--w);
+  color:#fff;opacity:0;will-change:transform,opacity;
+  animation:projfall var(--dur) linear var(--delay) infinite}
+.projfall span svg{display:block;width:100%;height:auto}
+@keyframes projfall{
+  0%{transform:translate3d(0,-26vh,0) rotate(45deg);opacity:0}
+  10%{opacity:var(--o)}
+  86%{opacity:var(--o)}
+  100%{transform:translate3d(var(--drift),118vh,0) rotate(45deg);opacity:0}
+}
+/* حين يطلب الجهاز تقليل الحركة: تبقى العلامات ساكنة موزّعة بلا نزول */
+@media (prefers-reduced-motion:reduce){
+  .projfall span{animation:none;top:var(--y);opacity:var(--o);transform:rotate(45deg)}
+}
+.pgrid{display:grid;gap:clamp(20px,4vw,52px);grid-template-columns:1fr auto;align-items:center;max-width:1180px;width:100%;
+  position:relative;z-index:1}
 @media (max-width:880px){.pgrid{grid-template-columns:1fr;justify-items:center;text-align:center}}
 .pgrid h2{font-size:clamp(22px,4.4vw,40px);font-weight:700;margin-bottom:4px}
 .bigcode{font-size:clamp(48px,13vw,116px);font-weight:700;letter-spacing:.13em;line-height:1.08;margin:8px 0;font-variant-numeric:tabular-nums}
@@ -851,6 +869,8 @@ mark{background:var(--gold-100);color:inherit;border-radius:3px;padding:0 2px}
 
   /* شاشة العرض */
   #proj{ padding:calc(20px + env(safe-area-inset-top)) 18px calc(20px + env(safe-area-inset-bottom)); }
+  /* عدد أقل من العلامات على الجوال، فالشاشة أضيق والمعالج أصغر */
+  .projfall span:nth-child(n+11){ display:none; }
 }
 
 /* ---------- أضيق الهواتف ---------- */
