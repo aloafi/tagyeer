@@ -13,16 +13,16 @@ import { WM_PATH } from "../../components/ui/Wordmark.jsx";
 
 const POLL_MS = 5000;
 
-/* خلفية شاشة العرض: شبكة منتظمة من علامة «تغيير» مائلة 30°.
+/* خلفية شاشة العرض: شبكة منتظمة من علامة «تغيير» مائلة 20°.
    تُبنى بلاطةً واحدة من مسار العلامة نفسه (مصدر واحد في Wordmark)،
    وتتكرّر تلقائياً بانتظام، ثم تُزاح الطبقة بمقدار بلاطة كاملة فتبدو
    الشبكة نازلة بلا بداية ولا نهاية. */
-const TILE_W = 1689;              /* عرض البلاطة في إحداثيات الرسم */
-const TILE_H = 1526;              /* ارتفاعها — النسبة نفسها في CSS */
+const TILE_W = 1660;              /* عرض البلاطة في إحداثيات الرسم */
+const TILE_H = 1393;              /* ارتفاعها — النسبة نفسها في CSS */
 
 const TILE_SVG =
   '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + TILE_W + ' ' + TILE_H + '">' +
-  '<g transform="rotate(30 ' + TILE_W / 2 + ' ' + TILE_H / 2 + ') translate(' +
+  '<g transform="rotate(20 ' + TILE_W / 2 + ' ' + TILE_H / 2 + ') translate(' +
   (TILE_W / 2 - 676) + ' ' + (TILE_H / 2 - 462) + ')">' +
   '<path fill="#ffffff" fill-rule="evenodd" d="' + WM_PATH + '"/>' +
   "</g></svg>";

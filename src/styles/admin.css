@@ -571,7 +571,7 @@ mark{background:var(--gold-100);color:inherit;border-radius:3px;padding:0 2px}
 .projfall{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;
   contain:paint;user-select:none}
 .projgrid{
-  --tw:186px; --th:168px;
+  --tw:187px; --th:157px;
   position:absolute;inset-inline:0;top:calc(var(--th) * -1);
   height:calc(100% + var(--th) * 2);
   background-repeat:repeat;background-size:var(--tw) var(--th);background-position:0 0;
