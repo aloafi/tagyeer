@@ -17,19 +17,23 @@ const POLL_MS = 5000;
    تُبنى بلاطةً واحدة من مسار العلامة نفسه (مصدر واحد في Wordmark)،
    وتتكرّر تلقائياً بانتظام، ثم تُزاح الطبقة بمقدار بلاطة كاملة فتبدو
    الشبكة نازلة بلا بداية ولا نهاية. */
-const TILE_W = 1670;              /* عرض البلاطة في إحداثيات الرسم */
-const TILE_H = 1705;              /* ارتفاعها — النسبة نفسها في CSS */
-
-/* مركز العلامة يُحسب من إطارها المُصدَّر، فلا يحتاج ضبطاً يدوياً إن
-   تغيّرت العلامة يوماً */
+/* مقاس البلاطة يُشتقّ من إطار العلامة نفسها: إطارها بعد الميل، زائد
+   فراغاً متناسباً معها. فلو تغيّرت العلامة يوماً بقي التباعد متساوياً
+   بلا ضبط يدوي. */
+const TILT = 20;
 const [VB_X, VB_Y, VB_W, VB_H] = WM_VIEWBOX.split(" ").map(Number);
-const CX = VB_X + VB_W / 2;
-const CY = VB_Y + VB_H / 2;
+const RAD = (TILT * Math.PI) / 180;
+const BOX_W = VB_W * Math.cos(RAD) + VB_H * Math.sin(RAD);
+const BOX_H = VB_W * Math.sin(RAD) + VB_H * Math.cos(RAD);
+const GAP = VB_W * 0.56;
+const TILE_W = Math.round(BOX_W + GAP);
+const TILE_H = Math.round(BOX_H + GAP);
+const TILE_PX = 150;                 /* عرض البلاطة على الشاشة */
 
 const TILE_SVG =
   '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + TILE_W + ' ' + TILE_H + '">' +
-  '<g transform="rotate(20 ' + TILE_W / 2 + ' ' + TILE_H / 2 + ') translate(' +
-  (TILE_W / 2 - CX) + ' ' + (TILE_H / 2 - CY) + ')">' +
+  '<g transform="rotate(' + TILT + ' ' + TILE_W / 2 + ' ' + TILE_H / 2 + ') translate(' +
+  (TILE_W / 2 - (VB_X + VB_W / 2)) + ' ' + (TILE_H / 2 - (VB_Y + VB_H / 2)) + ')">' +
   '<path fill="#ffffff" fill-rule="evenodd" d="' + WM_PATH + '"/>' +
   "</g></svg>";
 
@@ -98,7 +102,14 @@ export default function Projection() {
       <div id="proj" className="on">
         {/* زينة فقط — لا تتلقّى ضغطاً ولا يقرأها القارئ الصوتي */}
         <div className="projfall" aria-hidden="true">
-          <div className="projgrid" style={{ backgroundImage: TILE_URL }} />
+          <div
+            className="projgrid"
+            style={{
+              backgroundImage: TILE_URL,
+              "--tw": TILE_PX + "px",
+              "--th": Math.round((TILE_PX * TILE_H) / TILE_W) + "px",
+            }}
+          />
         </div>
 
         <button className="closex" onClick={close} aria-label="إغلاق">
