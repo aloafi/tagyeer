@@ -566,22 +566,25 @@ mark{background:var(--gold-100);color:inherit;border-radius:3px;padding:0 2px}
 
 #proj{position:fixed;inset:0;z-index:90;background:var(--brand-800);color:#fff;display:none;padding:clamp(18px,4vw,40px);overflow:auto}
 #proj.on{display:grid;place-items:center}
-/* خلفية شاشة العرض: علامات «تغيير» مائلة تنزل ببطء خلف المحتوى */
+/* خلفية شاشة العرض: شبكة منتظمة من علامة «تغيير» تنزل ببطء خلف المحتوى.
+   الإزاحة بمقدار بلاطة كاملة بالضبط، فتُغلق الدورة بلا قفزة ظاهرة. */
 .projfall{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;
   contain:paint;user-select:none}
-.projfall span{position:absolute;top:0;inset-inline-start:var(--x);width:var(--w);
-  color:#fff;opacity:0;will-change:transform,opacity;
-  animation:projfall var(--dur) linear var(--delay) infinite}
-.projfall span svg{display:block;width:100%;height:auto}
-@keyframes projfall{
-  0%{transform:translate3d(0,-26vh,0) rotate(45deg);opacity:0}
-  10%{opacity:var(--o)}
-  86%{opacity:var(--o)}
-  100%{transform:translate3d(var(--drift),118vh,0) rotate(45deg);opacity:0}
+.projgrid{
+  --tw:186px; --th:168px;
+  position:absolute;inset-inline:0;top:calc(var(--th) * -1);
+  height:calc(100% + var(--th) * 2);
+  background-repeat:repeat;background-size:var(--tw) var(--th);background-position:0 0;
+  opacity:.085;will-change:transform;
+  animation:projgrid 24s linear infinite;
 }
-/* حين يطلب الجهاز تقليل الحركة: تبقى العلامات ساكنة موزّعة بلا نزول */
+@keyframes projgrid{
+  from{transform:translate3d(0,0,0)}
+  to{transform:translate3d(0,var(--th),0)}
+}
+/* حين يطلب الجهاز تقليل الحركة: تبقى الشبكة ساكنة */
 @media (prefers-reduced-motion:reduce){
-  .projfall span{animation:none;top:var(--y);opacity:var(--o);transform:rotate(45deg)}
+  .projgrid{animation:none}
 }
 .pgrid{display:grid;gap:clamp(20px,4vw,52px);grid-template-columns:1fr auto;align-items:center;max-width:1180px;width:100%;
   position:relative;z-index:1}
@@ -869,8 +872,6 @@ mark{background:var(--gold-100);color:inherit;border-radius:3px;padding:0 2px}
 
   /* شاشة العرض */
   #proj{ padding:calc(20px + env(safe-area-inset-top)) 18px calc(20px + env(safe-area-inset-bottom)); }
-  /* عدد أقل من العلامات على الجوال، فالشاشة أضيق والمعالج أصغر */
-  .projfall span:nth-child(n+11){ display:none; }
 }
 
 /* ---------- أضيق الهواتف ---------- */
