@@ -5,6 +5,7 @@ import { useAdminData } from "../../hooks/useAdminData.jsx";
 import { Kpi, ChartCard, ErrorBox, Spinner, Chip } from "../../components/ui/Primitives.jsx";
 import { RankList } from "../../components/charts/Charts.jsx";
 import SessionCard from "../../components/SessionCard.jsx";
+import QuizTile from "../../components/QuizTile.jsx";
 import { ago } from "../../lib/format.js";
 
 export default function Overview() {
@@ -27,6 +28,8 @@ export default function Overview() {
         .filter((q) => q.responses_count > 0)
         .slice(0, 6),
       recent: sessions.slice(0, 7),
+      /* التجارب في الشريط العلوي: الأحدث تعديلاً أولاً */
+      strip: quizzes.slice().sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at)),
     };
   }, [quizzes, sessions]);
 
@@ -41,6 +44,20 @@ export default function Overview() {
         <Kpi label="المشاركون" value={m.joined} sub="إجمالي من انضم لكل الجلسات" icon="usersWide" />
         <Kpi label="معدل الإكمال" value={m.rate + "%"} sub={m.finished + " أكملوا من " + m.joined} icon="checkBox" />
       </div>
+
+      {m.strip.length > 0 && (
+        <div className="sec">
+          <div className="sechead">
+            <h2 className="t-lg">التجارب</h2>
+            <Chip kind="grey">{m.strip.length}</Chip>
+            <button className="btn ghost sm sp" onClick={() => nav("/quizzes")}>كل التجارب</button>
+          </div>
+          {/* شريط أفقي في سطر واحد — يُمرَّر أفقياً إذا زادت التجارب عن عرض الشاشة */}
+          <div className="qstrip">
+            {m.strip.map((q) => <QuizTile key={q.id} q={q} />)}
+          </div>
+        </div>
+      )}
 
       {m.live.length > 0 && (
         <div className="sec">

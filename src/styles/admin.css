@@ -313,6 +313,31 @@ body.slim .brandbox{justify-content:center;padding:4px 0 14px}
   .band .wide{grid-column:1/-1}
 }
 
+/* ---------- شريط التجارب في «نظرة عامة» ---------- */
+/* سطر واحد فوق الجلسات: كل تجربة بطاقة مختصرة، وينزلق أفقياً إن زادت عن العرض */
+.qstrip{display:flex;gap:12px;overflow-x:auto;overscroll-behavior-x:contain;
+  scroll-snap-type:x proximity;padding-bottom:5px}
+.qstrip::-webkit-scrollbar{height:7px}
+.qstrip::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:999px}
+.qstrip::-webkit-scrollbar-track{background:transparent}
+/* تتمدّد لتملأ السطر حين تكون التجارب قليلة، وتنزلق حين تكثر */
+.qtile{flex:1 1 232px;min-width:232px;max-width:320px;scroll-snap-align:start;
+  display:flex;align-items:center;gap:11px;text-align:start;line-height:normal;
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
+  padding:11px 13px;cursor:pointer;box-shadow:var(--sh-xs);
+  transition:border-color .16s,box-shadow .16s,transform .16s}
+.qtile:hover{border-color:var(--brand-300);box-shadow:var(--sh-sm);transform:translateY(-1px)}
+.qtemo{flex:none;width:40px;height:40px;border-radius:12px;background:var(--brand-50);
+  border:1px solid var(--brand-100);display:grid;place-items:center;font-size:20px;line-height:1}
+.qtbody{display:grid;gap:4px;min-width:0}
+.qtname{font-size:13.5px;font-weight:600;color:var(--text);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qtmeta{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text-3);
+  white-space:nowrap;overflow:hidden}
+.qtmeta b{font-weight:700;color:var(--text-2);font-variant-numeric:tabular-nums}
+.qtmeta .gold b{color:var(--gold-700)}
+.qtmeta i{width:3px;height:3px;border-radius:50%;background:var(--border-strong);flex:none}
+
 .sgrid{display:grid;gap:13px;grid-template-columns:repeat(auto-fill,minmax(304px,1fr));align-items:start}
 .sgrid.list{grid-template-columns:1fr}
 .scard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:0;overflow:hidden;
@@ -771,6 +796,16 @@ mark{background:var(--gold-100);color:inherit;border-radius:3px;padding:0 2px}
     flex:0 0 min(82vw, 330px);
     scroll-snap-align:center;
   }
+
+  /* شريط التجارب يسلك المسلك نفسه: يبلغ حافة الشاشة بلا شريط تمرير ظاهر */
+  .qstrip{
+    margin-inline:calc(var(--gutter) * -1);
+    padding-inline:var(--gutter);
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .qstrip::-webkit-scrollbar{ display:none; }
+  .qtile{ flex:0 0 min(74vw, 272px); min-width:0; max-width:none; }
 }
 
 @media (max-width:980px){
