@@ -56,13 +56,18 @@ export default function QuizEditor() {
     return () => { alive = false; };
   }, [id, pw]);
 
-  /* تحذير المتصفح عند مغادرة الصفحة بتغييرات غير محفوظة */
+  /* تحذير المتصفح عند مغادرة الصفحة بتغييرات غير محفوظة.
+     والراية العامة تمنع أي تعافٍ تلقائي من إعادة تحميل تُضيّع العمل. */
   useEffect(() => {
-    if (!dirty) return;
+    window.__cmqDirty = dirty;
+    if (!dirty) return undefined;
     const h = (e) => { e.preventDefault(); e.returnValue = ""; };
     window.addEventListener("beforeunload", h);
     return () => window.removeEventListener("beforeunload", h);
   }, [dirty]);
+
+  /* ولا تبقى الراية مرفوعة بعد مغادرة المحرر */
+  useEffect(() => () => { window.__cmqDirty = false; }, []);
 
   const patch = useCallback((p) => {
     setQuiz((q) => ({ ...q, ...p }));

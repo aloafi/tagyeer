@@ -1,28 +1,29 @@
 /* جدول المسارات — مصدر الحقيقة الوحيد لبنية الروابط في المنصة.
    كل صفحة تُحمَّل كسولاً (lazy) فلا ينتظر المشارك شيفرة لوحة التحكم. */
-import { lazy, Suspense } from "react";
+import { Suspense } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import AdminLayout from "./layouts/AdminLayout.jsx";
 import { useAuth } from "./lib/auth.jsx";
 import { AdminDataProvider } from "./hooks/useAdminData.jsx";
+import lazyPage from "./lib/lazyPage.js";
 
-const Join        = lazy(() => import("./pages/public/Join.jsx"));
-const Play        = lazy(() => import("./pages/public/Play.jsx"));
-const Login       = lazy(() => import("./pages/admin/Login.jsx"));
-const Overview    = lazy(() => import("./pages/admin/Overview.jsx"));
-const Quizzes     = lazy(() => import("./pages/admin/Quizzes.jsx"));
-const QuizEditor  = lazy(() => import("./pages/admin/QuizEditor.jsx"));
-const Sessions    = lazy(() => import("./pages/admin/Sessions.jsx"));
-const SessionPage = lazy(() => import("./pages/admin/session/SessionPage.jsx"));
-const SessionOverview     = lazy(() => import("./pages/admin/session/TabOverview.jsx"));
-const SessionParticipants = lazy(() => import("./pages/admin/session/TabParticipants.jsx"));
-const SessionAnalytics    = lazy(() => import("./pages/admin/session/TabAnalytics.jsx"));
-const SessionMatrix       = lazy(() => import("./pages/admin/session/TabMatrix.jsx"));
-const SessionAnswers      = lazy(() => import("./pages/admin/session/TabAnswers.jsx"));
-const SessionSettings     = lazy(() => import("./pages/admin/session/TabSettings.jsx"));
-const Projection  = lazy(() => import("./pages/admin/Projection.jsx"));
-const Settings    = lazy(() => import("./pages/admin/Settings.jsx"));
-const NotFound    = lazy(() => import("./pages/NotFound.jsx"));
+const Join        = lazyPage(() => import("./pages/public/Join.jsx"));
+const Play        = lazyPage(() => import("./pages/public/Play.jsx"));
+const Login       = lazyPage(() => import("./pages/admin/Login.jsx"));
+const Overview    = lazyPage(() => import("./pages/admin/Overview.jsx"));
+const Quizzes     = lazyPage(() => import("./pages/admin/Quizzes.jsx"));
+const QuizEditor  = lazyPage(() => import("./pages/admin/QuizEditor.jsx"));
+const Sessions    = lazyPage(() => import("./pages/admin/Sessions.jsx"));
+const SessionPage = lazyPage(() => import("./pages/admin/session/SessionPage.jsx"));
+const SessionOverview     = lazyPage(() => import("./pages/admin/session/TabOverview.jsx"));
+const SessionParticipants = lazyPage(() => import("./pages/admin/session/TabParticipants.jsx"));
+const SessionAnalytics    = lazyPage(() => import("./pages/admin/session/TabAnalytics.jsx"));
+const SessionMatrix       = lazyPage(() => import("./pages/admin/session/TabMatrix.jsx"));
+const SessionAnswers      = lazyPage(() => import("./pages/admin/session/TabAnswers.jsx"));
+const SessionSettings     = lazyPage(() => import("./pages/admin/session/TabSettings.jsx"));
+const Projection  = lazyPage(() => import("./pages/admin/Projection.jsx"));
+const Settings    = lazyPage(() => import("./pages/admin/Settings.jsx"));
+const NotFound    = lazyPage(() => import("./pages/NotFound.jsx"));
 
 export function Fallback() {
   return (

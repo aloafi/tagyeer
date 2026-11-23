@@ -8,6 +8,8 @@ import { useAuth } from "../lib/auth.jsx";
 import { useAdminData } from "../hooks/useAdminData.jsx";
 import useDocumentTitle from "../hooks/useDocumentTitle.js";
 import { LS, KEYS } from "../lib/storage.js";
+import { PaneBoundary } from "../components/ErrorBoundary.jsx";
+import watchBuild from "../lib/version.js";
 
 const HeadCtx = createContext({ setHead: () => {} });
 
@@ -41,6 +43,7 @@ export default function AdminLayout() {
   const [head, setHead] = useState(null);
   const [navOpen, setNavOpen] = useState(false);
   const [slim, setSlim] = useState(() => LS.get(KEYS.slim) === "1");
+  const [updated, setUpdated] = useState(false);
   const { logout } = useAuth();
   const data = useAdminData();
   const loc = useLocation();
@@ -52,6 +55,9 @@ export default function AdminLayout() {
   useEffect(() => {
     window.scrollTo({ top: 0 });
   }, [loc.pathname]);
+
+  /* نسخة جديدة منشورة: نخبر بها بهدوء بدل انتظار أول عطل */
+  useEffect(() => watchBuild(() => setUpdated(true)), []);
 
   const toggleSlim = useCallback(() => {
     setSlim((s) => { LS.set(KEYS.slim, s ? "0" : "1", true); return !s; });
@@ -130,7 +136,26 @@ export default function AdminLayout() {
             <div className="content">
               {/* المفتاح يعيد تشغيل حركة الظهور عند كل انتقال */}
               <div className="view on" key={loc.pathname}>
-                <Outlet />
+                {/* الحدّ هنا بمفتاح المسار: صفحة تتعطّل لا تُجمّد بقية
+                    اللوحة، والانتقال إلى غيرها يُعيد الأمور إلى نصابها */}
+                {updated && (
+                  <div className="note info" style={{ marginBottom: 14, alignItems: "center" }}>
+                    <Icon name="refresh" strokeWidth={1.8} />
+                    <span>
+                      صدر تحديث للمنصة — أعد التحميل لتعمل على أحدث نسخة.{" "}
+                      <button
+                        className="btn ghost xs"
+                        style={{ marginInlineStart: 6 }}
+                        onClick={() => window.location.reload()}
+                      >
+                        تحديث الآن
+                      </button>
+                    </span>
+                  </div>
+                )}
+                <PaneBoundary key={loc.pathname}>
+                  <Outlet />
+                </PaneBoundary>
               </div>
             </div>
 
