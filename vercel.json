@@ -21,7 +21,7 @@
       ]
     },
     {
-      "source": "/:file(favicon-v2.svg|wordmark.svg|icon-maskable.svg|icon-square.svg|og-athr-v2.png|icon-180-v2.png|icon-192-v2.png|icon-512-v2.png|icon-maskable-512-v2.png|site.webmanifest)",
+      "source": "/:file(favicon-v2.svg|wordmark.svg|icon-maskable.svg|icon-square.svg|og-athr-v3.png|icon-180-v2.png|icon-192-v2.png|icon-512-v2.png|icon-maskable-512-v2.png|site.webmanifest)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=604800" }
       ]
