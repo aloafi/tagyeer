@@ -418,7 +418,7 @@ export default function Simulator({ quiz, patch, sel, setSel, lo, hi }) {
                 <div className="topbar">
                   <span className="mark">
                     <Icon name="refresh" strokeWidth={1.8} />
-                    {quiz.title || "منصة تغيير"}
+                    {quiz.title || "منصة أثر"}
                   </span>
                   {qi > -1 ? <span className="steps">{qi + 1} من {questions.length}</span> : null}
                 </div>

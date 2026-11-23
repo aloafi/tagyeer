@@ -105,9 +105,10 @@ select.inp{cursor:pointer;appearance:none;background-repeat:no-repeat;background
 .brandbox{display:flex;align-items:center;gap:10px;padding:4px 8px 14px;overflow:hidden}
 .brandbox .bm{width:34px;height:34px;border-radius:10px;background:var(--brand);display:grid;place-items:center;flex:none}
 .brandbox .bm svg{width:18px;height:18px;color:#fff}
-.brandbox .bm svg.wm{width:23px;height:auto;color:#fff}
+.brandbox .bm svg.wm{width:19px;height:auto;color:#fff}
 .brandbox b{font-size:15px;font-weight:700;color:var(--brand-800);line-height:1.2;display:block;white-space:nowrap}
-.brandbox span{font-size:11px;color:var(--text-3);white-space:nowrap}
+/* الوصف سطران على الأكثر — أطول من أن يُحشر في سطر واحد */
+.brandbox span{font-size:11px;color:var(--text-3);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .navgrp{font-size:10.5px;font-weight:700;color:var(--text-3);padding:12px 10px 5px;letter-spacing:.4px;white-space:nowrap}
 .navitem{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;cursor:pointer;text-decoration:none;line-height:normal;
   padding:9px 10px;border-radius:var(--r-sm);color:var(--text-2);font-size:14px;font-weight:500;
@@ -566,16 +567,16 @@ mark{background:var(--gold-100);color:inherit;border-radius:3px;padding:0 2px}
 
 #proj{position:fixed;inset:0;z-index:90;background:var(--brand-800);color:#fff;display:none;padding:clamp(18px,4vw,40px);overflow:auto}
 #proj.on{display:grid;place-items:center}
-/* خلفية شاشة العرض: شبكة منتظمة من علامة «تغيير» تنزل ببطء خلف المحتوى.
+/* خلفية شاشة العرض: شبكة منتظمة من علامة «أثر» تنزل ببطء خلف المحتوى.
    الإزاحة بمقدار بلاطة كاملة بالضبط، فتُغلق الدورة بلا قفزة ظاهرة. */
 .projfall{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;
   contain:paint;user-select:none}
 .projgrid{
-  --tw:187px; --th:157px;
+  --tw:150px; --th:153px;
   position:absolute;inset-inline:0;top:calc(var(--th) * -1);
   height:calc(100% + var(--th) * 2);
   background-repeat:repeat;background-size:var(--tw) var(--th);background-position:0 0;
-  opacity:.085;will-change:transform;
+  opacity:.07;will-change:transform;
   animation:projgrid 24s linear infinite;
 }
 @keyframes projgrid{

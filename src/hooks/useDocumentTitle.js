@@ -1,7 +1,7 @@
 /* عنوان تبويب المتصفح يتبع الصفحة الحالية — مهم للتنقّل بالسجل والمفضّلة. */
 import { useEffect } from "react";
 
-export const SITE = "منصة تغيير";
+export const SITE = "منصة أثر";
 
 export default function useDocumentTitle(title) {
   useEffect(() => {

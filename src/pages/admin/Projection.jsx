@@ -9,21 +9,27 @@ import { sessionResults } from "../../lib/api.js";
 import { joinLink } from "../../lib/links.js";
 import useDocumentTitle from "../../hooks/useDocumentTitle.js";
 import { Spinner, Empty } from "../../components/ui/Primitives.jsx";
-import { WM_PATH } from "../../components/ui/Wordmark.jsx";
+import { WM_PATH, WM_VIEWBOX } from "../../components/ui/Wordmark.jsx";
 
 const POLL_MS = 5000;
 
-/* خلفية شاشة العرض: شبكة منتظمة من علامة «تغيير» مائلة 20°.
+/* خلفية شاشة العرض: شبكة منتظمة من علامة «أثر» مائلة 20°.
    تُبنى بلاطةً واحدة من مسار العلامة نفسه (مصدر واحد في Wordmark)،
    وتتكرّر تلقائياً بانتظام، ثم تُزاح الطبقة بمقدار بلاطة كاملة فتبدو
    الشبكة نازلة بلا بداية ولا نهاية. */
-const TILE_W = 1660;              /* عرض البلاطة في إحداثيات الرسم */
-const TILE_H = 1393;              /* ارتفاعها — النسبة نفسها في CSS */
+const TILE_W = 1670;              /* عرض البلاطة في إحداثيات الرسم */
+const TILE_H = 1705;              /* ارتفاعها — النسبة نفسها في CSS */
+
+/* مركز العلامة يُحسب من إطارها المُصدَّر، فلا يحتاج ضبطاً يدوياً إن
+   تغيّرت العلامة يوماً */
+const [VB_X, VB_Y, VB_W, VB_H] = WM_VIEWBOX.split(" ").map(Number);
+const CX = VB_X + VB_W / 2;
+const CY = VB_Y + VB_H / 2;
 
 const TILE_SVG =
   '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + TILE_W + ' ' + TILE_H + '">' +
   '<g transform="rotate(20 ' + TILE_W / 2 + ' ' + TILE_H / 2 + ') translate(' +
-  (TILE_W / 2 - 676) + ' ' + (TILE_H / 2 - 462) + ')">' +
+  (TILE_W / 2 - CX) + ' ' + (TILE_H / 2 - CY) + ')">' +
   '<path fill="#ffffff" fill-rule="evenodd" d="' + WM_PATH + '"/>' +
   "</g></svg>";
 
